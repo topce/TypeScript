@@ -7206,6 +7206,7 @@ export interface CompilerOptions {
     strictBindCallApply?: boolean;  // Always combine with strict property
     strictNullChecks?: boolean;  // Always combine with strict property
     strictPropertyInitialization?: boolean;  // Always combine with strict property
+    veryStrictArity?: boolean;
     stripInternal?: boolean;
     suppressExcessPropertyErrors?: boolean;
     suppressImplicitAnyIndexErrors?: boolean;
