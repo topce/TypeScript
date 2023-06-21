@@ -49,3 +49,101 @@ with any additional questions or comments.
 ## Roadmap
 
 For details on our planned features and future direction please refer to our [roadmap](https://github.com/microsoft/TypeScript/wiki/Roadmap).
+
+## New feature
+This fork provide more strict argument checking  
+so function 
+with fewer parameters are not longer assignable to functions that take more parameters
+contarty to https://github.com/microsoft/TypeScript/wiki/FAQ#why-are-functions-with-fewer-parameters-assignable-to-functions-that-take-more-parameters
+
+It fixes issues :
+- https://github.com/microsoft/TypeScript/issues/13043
+- https://github.com/microsoft/TypeScript/issues/17868
+- https://github.com/microsoft/TypeScript/issues/21868
+- https://github.com/microsoft/TypeScript/issues/46881
+
+Some code examples
+```ts
+// https://github.com/microsoft/TypeScript/issues/13043
+const x = (a = 1): number => a;
+const y: () => number = x;
+// TypeScript error: "Supplied parameters do not match signature of call target."
+// OK
+y("x").toFixed();
+
+const z: (a: string) => number = y;
+// No TypeScript error
+// Runtime error: Uncaught TypeError: z(...).toFixed is not a function
+z("x").toFixed();
+// user get error like expected
+
+```
+
+```ts
+// https://github.com/microsoft/TypeScript/issues/21868
+const some : ((arg: string) => boolean) = () => true;
+// works user get error like expected 
+```
+Code bellow works without problem 
+```ts
+type BreakCallback<T extends (...args: any) => any, P = Parameters<T>> =
+  P extends [...infer Rest, infer _Last]
+    ? ((...args: Rest) => ReturnType<T>) | BreakCallback<T, Rest>
+    : T;
+type Callback<T> = (value: T, index: number, array: T[]) => void;
+interface Array<T> {
+    forEach(callbackfn: BreakCallback<Callback<T>>): void;
+}
+const items = [1, 2, 3];
+items.forEach(arg:number => console.log(arg));
+items.forEach(() => console.log("just counting"));
+```
+Code bellow  
+there is error in hi implementation of class A
+```ts
+interface I {
+  hi(a: string, b: string): void;
+}
+
+class A implements I {
+
+
+  hi(a: string): void { //  there is ERROR
+    throw new Error("Method not implemented." + a);
+  }
+
+}
+
+class B implements I {
+
+
+  hi(a: string, b: string, c: string): void {
+    throw new Error("Method not implemented." + a + b);
+  }
+
+}
+```
+Code bellow works
+there is no error becuase b is otptional parameter  
+```ts
+interface I {
+  hi(a: string, b?: string): void;
+}
+
+class A implements I {
+
+
+  hi(a: string): void { // NO ERROR HERE with new flag there is ERROR
+    throw new Error("Method not implemented." + a);
+  }
+
+}
+
+
+```
+## Warning 
+
+This feature is not supported by TypeScript team. 
+PR was rejected https://github.com/microsoft/TypeScript/pull/54441.
+If you found it useful, you use it on your owns risk.
+   

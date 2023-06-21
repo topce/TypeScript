@@ -950,15 +950,6 @@ const commandOptionsWithoutBuild: CommandLineOption[] = [
         defaultValueDescription: false,
     },
     {
-        name: "veryStrictArity",
-        type: "boolean",
-        affectsSemanticDiagnostics: true,
-        affectsBuildInfo: true,
-        category: Diagnostics.Type_Checking,
-        description: Diagnostics.Target_signature_provides_too_many_arguments_Expected_0_or_more_but_got_1,
-        defaultValueDescription: false,
-    },
-    {
         name: "noImplicitOverride",
         type: "boolean",
         affectsSemanticDiagnostics: true,

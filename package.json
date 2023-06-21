@@ -1,8 +1,8 @@
 {
-    "name": "typescript",
-    "author": "Microsoft Corp.",
-    "homepage": "https://www.typescriptlang.org/",
-    "version": "5.1.3",
+    "name": "@topce/typescript",
+    "author": "topce",
+    "homepage": "https://github.com/topce/TypeScript",
+    "version": "5.1.6",
     "license": "Apache-2.0",
     "description": "TypeScript is a language for application scale JavaScript development",
     "keywords": [
@@ -13,11 +13,11 @@
         "javascript"
     ],
     "bugs": {
-        "url": "https://github.com/Microsoft/TypeScript/issues"
+        "url": "https://github.com/topce/TypeScript/issues"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/Microsoft/TypeScript.git"
+        "url": "https://github.com/topce/TypeScript"
     },
     "main": "./lib/typescript.js",
     "typings": "./lib/typescript.d.ts",
