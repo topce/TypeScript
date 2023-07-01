@@ -1,0 +1,38 @@
+diff --git a/src/compiler/checker.ts b/src/compiler/checker.ts
+index 0b67afefbb..eb18a1bf04 100644
+--- a/src/compiler/checker.ts
++++ b/src/compiler/checker.ts
+@@ -19946,6 +19946,17 @@ export function createTypeChecker(host: TypeCheckerHost): TypeChecker {
+             return Ternary.False;
+         }
+ 
++        const targetHasMoreParameters = !hasEffectiveRestParameter(source) &&
++            (checkMode & SignatureCheckMode.StrictArity ? hasEffectiveRestParameter(target) || targetCount > getParameterCount(source) : getMinArgumentCount(target) > getParameterCount(source));
++        if (targetHasMoreParameters) {
++            if (reportErrors && !(checkMode & SignatureCheckMode.StrictArity)) {
++                // the second condition should be redundant, because there is no error reporting when comparing signatures by strict arity
++                // since it is only done for subtype reduction
++                errorReporter!(Diagnostics.Target_signature_provides_too_few_arguments_Expected_0_but_got_1,getMinArgumentCount(target), getParameterCount(source));
++            }
++            return Ternary.False;
++        }
++
+         if (source.typeParameters && source.typeParameters !== target.typeParameters) {
+             target = getCanonicalSignature(target);
+             source = instantiateSignatureInContextOf(source, target, /*inferenceContext*/ undefined, compareTypes);
+diff --git a/src/compiler/diagnosticMessages.json b/src/compiler/diagnosticMessages.json
+index e151991271..3486704d6f 100644
+--- a/src/compiler/diagnosticMessages.json
++++ b/src/compiler/diagnosticMessages.json
+@@ -3660,6 +3660,11 @@
+         "code": 2854
+     },
+ 
++    "Target signature provides too few arguments Expected {0} but got {1}": {
++        "category": "Error",
++        "code": 2999
++    },
++
+     "Import declaration '{0}' is using private name '{1}'.": {
+         "category": "Error",
+         "code": 4000
