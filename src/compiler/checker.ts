@@ -19946,6 +19946,17 @@ export function createTypeChecker(host: TypeCheckerHost): TypeChecker {
             return Ternary.False;
         }
 
+        const targetHasMoreParameters = !hasEffectiveRestParameter(source) &&
+            (checkMode & SignatureCheckMode.StrictArity ? hasEffectiveRestParameter(target) || targetCount > getParameterCount(source) : getMinArgumentCount(target) > getParameterCount(source));
+        if (targetHasMoreParameters) {
+            if (reportErrors && !(checkMode & SignatureCheckMode.StrictArity)) {
+                // the second condition should be redundant, because there is no error reporting when comparing signatures by strict arity
+                // since it is only done for subtype reduction
+                errorReporter!(Diagnostics.Target_signature_provides_too_few_arguments_Expected_0_but_got_1,getMinArgumentCount(target), getParameterCount(source));
+            }
+            return Ternary.False;
+        }
+
         if (source.typeParameters && source.typeParameters !== target.typeParameters) {
             target = getCanonicalSignature(target);
             source = instantiateSignatureInContextOf(source, target, /*inferenceContext*/ undefined, compareTypes);
